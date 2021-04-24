@@ -29,7 +29,7 @@ class Visualization:
         wma.figure.savefig(os.path.join('static/', secure_filename(filename+'_wma.jpg')))
 
         #Exponential weighted moving average
-        df.index.freq = 'MS'
+        #df.index.freq = 'MS'
         span=12
         alpha = 2/(span+1)
         df['EWMA12'] = df.iloc[:,0].ewm(alpha=alpha,adjust=False).mean()

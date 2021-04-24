@@ -4,6 +4,8 @@ from flask import Flask, render_template, request,jsonify
 #from werkzeug import secure_filename
 from werkzeug.utils import secure_filename
 from visualization.visualization import Visualization
+from forecast_model.arima import ArimaModel
+ar=ArimaModel()
 draw=Visualization()
 UPLOAD_FOLDER = '/data'
 
@@ -38,6 +40,7 @@ def upload_file():
 		filename = secure_filename(file.filename)
 		
 		file.save(os.path.join('data/', secure_filename(file.filename)))
+		ar.create_model(file.filename)
 		draw.chart(file.filename)
 #		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		resp = jsonify({'message' : 'File successfully uploaded'})
