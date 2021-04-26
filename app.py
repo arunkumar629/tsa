@@ -51,6 +51,10 @@ def upload_file():
 		resp.status_code = 400
 		return resp
 
+@app.route('/forecast/<filename>')
+def forecastDetails(filename):
+	return jsonify(ar.timeRange(filename))
+
 
 if __name__ == '__main__':
     app.run(debug = True)

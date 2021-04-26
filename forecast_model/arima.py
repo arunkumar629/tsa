@@ -16,6 +16,18 @@ warnings.filterwarnings("ignore")
 
 
 class ArimaModel:
+    accuracy=0
+    def timeRange(self,filename):
+        df= pd.read_csv('data/'+filename,index_col='Date',parse_dates=True)
+        df.index.freq='MS'
+        length=len(df)-1
+        start_month= str(df.index[0])
+        end_month= str(df.index[length])
+        drange= pd.date_range(end_month, periods=11, freq='MS')
+        forecasted_length=str(drange[10])
+        return {"start":start_month,"end":end_month,"forecasted_month":forecasted_length,"accuracy":self.accuracy}
+
+        
     def create_model(self,filename):
         df2 = pd.read_csv('data/'+filename,index_col='Date',parse_dates=True)
         filename=filename[:-4]
@@ -34,7 +46,7 @@ class ArimaModel:
         results = model.fit()
         start=len(train)
         end=len(train)+len(test)-1
-        #predictions = results.predict(start=start, end=end, dynamic=False, typ='levels').rename('ARIMA(1,1,1) Predictions')
+        predictions = results.predict(start=start, end=end, dynamic=False, typ='levels').rename('ARIMA(1,1,1) Predictions')
         title = 'Real Manufacturing and Trade Inventories'
         ylabel='Chained 2012 Dollars'
         xlabel='' # we don't really need a label here
@@ -44,14 +56,14 @@ class ArimaModel:
         #ax.set(xlabel=xlabel, ylabel=ylabel)
         #ax.yaxis.set_major_formatter(formatter)
         #ax.figure.savefig('fig.jpg')
-        #error = mean_squared_error(test['data'], predictions)
+        error = mean_squared_error(test['data'], predictions)
         #print(f'ARIMA(1,1,1) MSE Error: {error:11.10}')
         model = ARIMA(df2['data'],order=(1,1,1))
         results = model.fit()
-        fcast = results.predict(len(df2),len(df2)+111,typ='levels').rename('ARIMA(1,1,1) Forecast')
+        fcast = results.predict(len(df2),len(df2)+11,typ='levels').rename('ARIMA(1,1,1) Forecast')
         # Plot predictions against known values
-        title = 'Real Manufacturing and Trade Inventories'
-        ylabel='Chained 2012 Dollars'            
+        title = filename
+        ylabel=''
         xlabel='' # we don't really need a label here'
         ax = df2['data'].plot(legend=True,figsize=(12,6),title=title)
         fcast.plot(legend=True)
@@ -59,6 +71,13 @@ class ArimaModel:
         ax.set(xlabel=xlabel, ylabel=ylabel)
         #ax.yaxis.set_major_formatter(formatter);
         ax.figure.savefig(os.path.join('static/', secure_filename(filename+'_forecast.jpg')))
+        print('mse error:',error)
+        mean=df2['data'].mean()
+        rmse=np.sqrt(error)
+        error_percentage=rmse/mean*100
+        self.accuracy=100-error_percentage
+        
+
 
     def adf_test(self,series,title=''):
         """
@@ -78,6 +97,7 @@ class ArimaModel:
             return True
         else:
             return False
+
 
 #ar=ArimaModel()
 #ar.create_model('TradeInventories.csv')
