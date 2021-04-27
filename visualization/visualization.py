@@ -1,3 +1,4 @@
+from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from statsmodels.tsa.holtwinters import SimpleExpSmoothing
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -16,6 +17,10 @@ class Visualization:
         basic=df.plot()
         filename=filename[:-4]
         basic.figure.savefig(os.path.join('static/', secure_filename(filename+'_basic.jpg')))
+        #decompose
+        result = seasonal_decompose(df['data'], model='multiplicative')  
+        ds=result.plot()
+        ds.savefig(os.path.join('static/', secure_filename(filename+'_decompose.jpg')))
 
         #Simple moving average
         df['6-month-SMA']  = df.iloc[:,0].rolling(window=6).mean()
