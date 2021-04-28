@@ -10,7 +10,7 @@ class anomaly:
         data_unseen = dataset.drop(data.index)
         data.reset_index(drop=True, inplace=True)
         data_unseen.reset_index(drop=True, inplace=True)
-        exp_ano101 = setup(data, normalize = True )
+        exp_ano101 = setup(data, normalize = True , silent=True)
         iforest = create_model('iforest')
         svm = create_model('svm', fraction = 0.025)
         iforest_results = assign_model(iforest)
