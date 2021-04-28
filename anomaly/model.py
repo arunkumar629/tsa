@@ -1,5 +1,8 @@
 from pycaret.anomaly import *
 import pandas as pd
+import shutil
+import os
+
 class anomaly:
     def create(self,filename):
         dataset=pd.read_csv('data/'+filename, usecols=['data'])
@@ -12,3 +15,17 @@ class anomaly:
         svm = create_model('svm', fraction = 0.025)
         iforest_results = assign_model(iforest)
         plot_model(iforest, save=True)
+        l=os.listdir()
+        for file in l:
+            if 'html' ==file[-4:]:
+                image_name=file
+
+        try:
+            shutil.move(image_name,os.path.join('static/','anomaly.html' ))
+        except:
+            print('no file ')
+
+
+
+#ano=anomaly()
+#ano.create('TradeInventories.csv')

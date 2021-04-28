@@ -42,8 +42,8 @@ def upload_file():
 		filename = secure_filename(file.filename)
 		
 		file.save(os.path.join('data/', secure_filename(file.filename)))
-		ar.create_model(file.filename)
 		ano.create(file.filename)
+		ar.create_model(file.filename)
 		draw.chart(file.filename)
 #		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		resp = jsonify({'message' : 'File successfully uploaded'})
