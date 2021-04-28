@@ -1,3 +1,4 @@
+import time
 from flask_cors import CORS
 import os
 from flask import Flask, render_template, request,jsonify
@@ -42,8 +43,9 @@ def upload_file():
 		filename = secure_filename(file.filename)
 		
 		file.save(os.path.join('data/', secure_filename(file.filename)))
-		ano.create(file.filename)
+
 		ar.create_model(file.filename)
+		#time.sleep(3)
 		draw.chart(file.filename)
 #		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		resp = jsonify({'message' : 'File successfully uploaded'})
@@ -56,6 +58,7 @@ def upload_file():
 
 @app.route('/forecast/<filename>')
 def forecastDetails(filename):
+	ano.create(filename)
 	return jsonify(ar.timeRange(filename))
 
 
