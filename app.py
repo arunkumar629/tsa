@@ -5,9 +5,12 @@ from flask import Flask, render_template, request,jsonify
 #from werkzeug import secure_filename
 from werkzeug.utils import secure_filename
 from visualization.visualization import Visualization
+from forecast_model.prophet import ProphetModel 
 from forecast_model.arima import ArimaModel
 from anomaly.model import anomaly
 ano=anomaly()
+
+
 ar=ArimaModel()
 draw=Visualization()
 UPLOAD_FOLDER = '/data'
@@ -58,9 +61,19 @@ def upload_file():
 
 @app.route('/forecast/<filename>')
 def forecastDetails(filename):
-	ano.create(filename)
 	return jsonify(ar.timeRange(filename))
 
+@app.route('/prophet/<filename>')
+def prophetDetails(filename):
+	ph=ProphetModel()
+	ph.execute(filename)
+	return "success"
+
+@app.route('/anomaly/<filename>')
+def anomalyDetails(filename):
+	
+	ano.create(filename)
+	return "success"
 
 if __name__ == '__main__':
     app.run(debug = True)
