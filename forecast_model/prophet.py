@@ -6,6 +6,7 @@ from fbprophet import Prophet
 
 
 class ProphetModel:
+    accuracy=0
     def execute(self,filename):
         df = pd.read_csv('./data/'+filename)
         df.columns = ['ds','y']
@@ -31,7 +32,8 @@ class ProphetModel:
         error=rmse(predictions,test['y'])
         mean=test.mean()
         print('percentage')
-        print(100-(error/mean*100))
+        self.accuracy=100-(error/mean*100)
+        return str(self.accuracy)
 
 #a=ProphetModel()
-#a.execute('BeerWineLiquor.csv')
+#print(a.execute('HospitalityEmployees.csv'))
