@@ -1,3 +1,5 @@
+from statsmodels.tsa.stattools import adfuller
+
 import os
 from werkzeug.utils import secure_filename
 import pandas as pd
@@ -7,7 +9,31 @@ from fbprophet import Prophet
 
 class ProphetModel:
     accuracy=0
+    def adf_test(self,series,title=''):
+        """
+        Pass in a time series and an optional title, returns an ADF report
+        """
+        #print(f'Augmented Dickey-Fuller Test: {title}')
+        result = adfuller(series.dropna(),autolag='AIC') # .dropna() handles differenced data
+        labels = ['ADF test statistic','p-value','# lags used','# observations']
+        out = pd.Series(result[0:4],index=labels)
+
+        for key,val in result[4].items():
+            out[f'critical value ({key})']=val
+        
+            #print(out.to_string())          # .to_string() removes the line "dtype: float64"
+    
+        if result[1] <= 0.05:
+            return True
+        else:
+            return False
+
+
+
     def execute(self,filename):
+        df1= pd.read_csv('data/'+filename,index_col='Date',parse_dates=True)
+        df1.index.freq='MS'
+        
         df = pd.read_csv('./data/'+filename)
         df.columns = ['ds','y']
         df['ds'] = pd.to_datetime(df['ds'])
@@ -33,7 +59,12 @@ class ProphetModel:
         mean=test.mean()
         print('percentage')
         self.accuracy=100-(error/mean*100)
-        return str(self.accuracy)
+        data=dict()
+        data['stationary']=self.adf_test(df1)
+        data['accuracy']=str(self.accuracy)
+        return data
+
+
 
 #a=ProphetModel()
-#print(a.execute('HospitalityEmployees.csv'))
+#print(a.execute('BeerWineLiquor.csv'))

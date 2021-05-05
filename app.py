@@ -65,15 +65,20 @@ def forecastDetails(filename):
 
 @app.route('/prophet/<filename>')
 def prophetDetails(filename):
-	accuracy=dict()
 	ph=ProphetModel()
-	accuracy["percentage"]=ph.execute(filename)
-	return jsonify(accuracy)
+	return jsonify(ph.execute(filename))
 
 @app.route('/anomaly/<filename>')
 def anomalyDetails(filename):
-	
-	ano.create(filename)
+	ano.abod(filename)
+	ano.cluster(filename)
+	ano.cof(filename)
+	ano.iforest(filename)
+	ano.knn(filename)
+	ano.lof(filename)
+	ano.svm(filename)
+	ano.sod(filename)
+	ano.histogram(filename)
 	return "success"
 
 if __name__ == '__main__':
