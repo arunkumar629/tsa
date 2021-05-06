@@ -1,0 +1,6 @@
+	ano.iforest(filename)
+	ano.knn(filename)
+	ano.lof(filename)
+	ano.svm(filename)
+	ano.sod(filename)
+	ano.histogram(filename)

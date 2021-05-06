@@ -74,6 +74,11 @@ def anomalyDetails(filename):
 	ano.cluster(filename)
 	ano.cof(filename)
 	ano.iforest(filename)
+
+	return "success"
+
+@app.route('/anomalyLoad/<filename>')
+def anomalyDetailsLoad(filename):
 	ano.knn(filename)
 	ano.lof(filename)
 	ano.svm(filename)
